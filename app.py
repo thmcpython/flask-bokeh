@@ -1,3 +1,4 @@
+import os
 from cgitb import html
 from flask import Flask, render_template
 from bokeh.embed import components
@@ -17,6 +18,13 @@ from bokeh.models.tools import HoverTool
 from bokeh.palettes import Spectral11
 from bokeh.embed import file_html
 from bokeh.plotting import figure, output_file, save
+
+chrome_options = webdriver.ChromeOptions()
+chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--no-sandbox")
+driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
 
 app = Flask(__name__)
 
@@ -69,11 +77,8 @@ def test():
 
     p.add_tools(hover)
 
-    # show(p)
-    # save(p)
 
-
-    #### get components ####
+    #### get components to form HTML page ####
     script, div = components(p)
 
     page = render_template('test.html', div=div, script=script)
