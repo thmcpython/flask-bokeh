@@ -24,7 +24,7 @@ chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--no-sandbox")
-# driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+chromedriver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
 
 app = Flask(__name__)
 
@@ -34,7 +34,7 @@ def test():
     URL = "https://spotwx.com/products/grib_index.php?model=nam_awphys&lat=49.81637&lon=-123.33601&tz=America/Vancouver&display=table"
     list=[]
 
-    with webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options) as driver:
+    with webdriver.Chrome(chromedriver) as driver:
         driver.get(URL)
 
         driver.find_element(By.XPATH, '//span[contains(text(), "Add/Remove Columns")]').click() #Click add columns button
