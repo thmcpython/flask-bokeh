@@ -35,7 +35,7 @@ def test():
     URL = "https://spotwx.com/products/grib_index.php?model=nam_awphys&lat=49.81637&lon=-123.33601&tz=America/Vancouver&display=table"
     list = []
 
-    with webdriver.Chrome(internetdriver) as driver:
+    with internetdriver as driver:
         driver.get(URL)
 
         # Click add columns button
