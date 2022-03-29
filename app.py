@@ -20,63 +20,75 @@ from bokeh.embed import file_html
 from bokeh.plotting import figure, output_file, save
 
 chrome_options = webdriver.ChromeOptions()
-chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+chrome_options.binary_location = r"/app/.apt/usr/bin/google-chrome"
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--no-sandbox")
-chromedriver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+ChromePATH = r"/app/.chromedriver/bin/chromedriver"   #The random r before the path converts it to a raw string
+driver = webdriver.Chrome(ChromePATH, chrome_options=chrome_options)
 
 app = Flask(__name__)
 
+
 @app.route('/')
 def test():
-    # ChromePATH = os.environ.get("CHROMEDRIVER_PATH")
     URL = "https://spotwx.com/products/grib_index.php?model=nam_awphys&lat=49.81637&lon=-123.33601&tz=America/Vancouver&display=table"
-    list=[]
+    list = []
 
-    with webdriver.Chrome(chromedriver) as driver:
+    with webdriver.Chrome(driver) as driver:
         driver.get(URL)
 
-        driver.find_element(By.XPATH, '//span[contains(text(), "Add/Remove Columns")]').click() #Click add columns button
-        driver.find_element(By.XPATH, '//span[contains(text(), "HGT_0C_DB")]').click() #click button to add freezing level to table
-        webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform() #Send escape key to exit add columns dialog box
+        # Click add columns button
+        driver.find_element(
+            By.XPATH, '//span[contains(text(), "Add/Remove Columns")]').click()
+        # click button to add freezing level to table
+        driver.find_element(
+            By.XPATH, '//span[contains(text(), "HGT_0C_DB")]').click()
+        # Send escape key to exit add columns dialog box
+        webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
         soup = BeautifulSoup(driver.page_source, 'lxml')
-        for item in soup.select("table#example tbody tr"): #select all the table rows
-            data = [elem.text for elem in item.select('td')] #grab the text for each td tag
-            list.append(data) #append the list of td text to the broader list, creating a list of lists
+        # select all the table rows
+        for item in soup.select("table#example tbody tr"):
+            # grab the text for each td tag
+            data = [elem.text for elem in item.select('td')]
+            # append the list of td text to the broader list, creating a list of lists
+            list.append(data)
 
-    df = pd.DataFrame(list, columns=["Datetime", "TMP", "DPT", "RH", "WS", "WD", "WG", "APCP", "Cloud", "SLP", "HGT_0C_DB"]) #Create dataframe and name columns
+    df = pd.DataFrame(list, columns=["Datetime", "TMP", "DPT", "RH", "WS", "WD", "WG",
+                      "APCP", "Cloud", "SLP", "HGT_0C_DB"])  # Create dataframe and name columns
 
     # Data cleanup and conversion
     df["Datetime"] = pd.to_datetime(df.Datetime)
-    df.rename({"HGT_0C_DB": "Freezing Level"}, axis="columns", inplace=True)   #Renames Freezing level column
+    df.rename({"HGT_0C_DB": "Freezing Level"}, axis="columns",
+              inplace=True)  # Renames Freezing level column
     converttonumeric = df.columns.drop('Datetime')
-    df[converttonumeric] = df[converttonumeric].apply(pd.to_numeric, errors='coerce')
-
+    df[converttonumeric] = df[converttonumeric].apply(
+        pd.to_numeric, errors='coerce')
 
     # Line Chart
     output_file(filename="spotwx.html", title="SpotWX data scrape")
 
     bokehdata = ColumnDataSource(df)
     p = figure(width=1000, height=400, x_axis_type='datetime')
-    p.line(x='Datetime', y='RH', source=bokehdata, line_color="#f46d43", line_width=3)
+    p.line(x='Datetime', y='RH', source=bokehdata,
+           line_color="#f46d43", line_width=3)
     p.title.text = 'Temperature forecast'
     p.xaxis.axis_label = 'Date'
     p.yaxis.axis_label = 'Temp. Celcius'
 
     hover = HoverTool()
-    hover.tooltips=[
+    hover.tooltips = [
         ('Time', '@Datetime{%H:%M}'),
         ('Wind Speed km/h', '@WS'),
-        ]
+    ]
 
-    hover.formatters={
-        '@Datetime': 'datetime', # Bokeh formatter docs here: https://docs.bokeh.org/en/2.4.0/docs/reference/models/formatters.html#datetimetickformatter
-        }
+    hover.formatters = {
+        # Bokeh formatter docs here: https://docs.bokeh.org/en/2.4.0/docs/reference/models/formatters.html#datetimetickformatter
+        '@Datetime': 'datetime',
+    }
 
     p.add_tools(hover)
-
 
     #### get components to form HTML page ####
     script, div = components(p)
