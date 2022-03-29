@@ -25,7 +25,7 @@ chrome_options.add_argument("--headless")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--no-sandbox")
 ChromePATH = r"/app/.chromedriver/bin/chromedriver"   #The random r before the path converts it to a raw string
-driver = webdriver.Chrome(ChromePATH, chrome_options=chrome_options)
+internetdriver = webdriver.Chrome(ChromePATH, chrome_options=chrome_options)
 
 app = Flask(__name__)
 
@@ -35,7 +35,7 @@ def test():
     URL = "https://spotwx.com/products/grib_index.php?model=nam_awphys&lat=49.81637&lon=-123.33601&tz=America/Vancouver&display=table"
     list = []
 
-    with webdriver.Chrome(driver) as driver:
+    with webdriver.Chrome(internetdriver) as driver:
         driver.get(URL)
 
         # Click add columns button
