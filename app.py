@@ -21,13 +21,13 @@ from bokeh.palettes import Spectral11
 from bokeh.embed import file_html
 from bokeh.plotting import figure, output_file, save
 
-# chrome_options = webdriver.ChromeOptions()
+chrome_options = webdriver.ChromeOptions()
 # chrome_options.binary_location = r"/app/.apt/usr/bin/google-chrome"
-# chrome_options.add_argument("--headless")
-# chrome_options.add_argument("--disable-dev-shm-usage")
-# chrome_options.add_argument("--no-sandbox")
-ChromePATH = r"C:\Users\timtr\Documents\Coding\Dev_Tools\chromedriver.exe"   #The random r before the path converts it to a raw string
-internetdriver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--no-sandbox")
+# ChromePATH = r"C:\Users\timtr\Documents\Coding\Dev_Tools\chromedriver.exe"   #The random r before the path converts it to a raw string
+internetdriver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 # internetdriver = webdriver.Chrome(ChromePATH, chrome_options=chrome_options)
 
 app = Flask(__name__)
