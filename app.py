@@ -66,34 +66,21 @@ def test():
     df[converttonumeric] = df[converttonumeric].apply(
         pd.to_numeric, errors='coerce')
 
-    printeddf = print(df)
-
-    # # Line Chart
+    # Line Chart
     # output_file(filename="spotwx.html", title="SpotWX data scrape")
 
-    # bokehdata = ColumnDataSource(df)
-    # p = figure(width=1000, height=400, x_axis_type='datetime')
-    # p.line(x='Datetime', y='RH', source=bokehdata,
-    #        line_color="#f46d43", line_width=3)
-    # p.title.text = 'Temperature forecast'
-    # p.xaxis.axis_label = 'Date'
-    # p.yaxis.axis_label = 'Temp. Celcius'
+    # prepare some data
+    x = [1, 2, 3, 4, 5]
+    y = [6, 7, 2, 4, 5]
 
-    # hover = HoverTool()
-    # hover.tooltips = [
-    #     ('Time', '@Datetime{%H:%M}'),
-    #     ('Wind Speed km/h', '@WS'),
-    # ]
+    # create a new plot with a title and axis labels
+    p = figure(title="Simple line example", x_axis_label="x", y_axis_label="y")
 
-    # hover.formatters = {
-    #     # Bokeh formatter docs here: https://docs.bokeh.org/en/2.4.0/docs/reference/models/formatters.html#datetimetickformatter
-    #     '@Datetime': 'datetime',
-    # }
-
-    # p.add_tools(hover)
+    # add a line renderer with legend and line thickness
+    p.line(x, y, legend_label="Temp.", line_width=2)
 
     #### get components to form HTML page ####
-    script, div = components(printeddf)
+    script, div = components(p)
 
     page = render_template('test.html', div=div, script=script)
     return page
