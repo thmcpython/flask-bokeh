@@ -1,3 +1,0 @@
-https://github.com/realpython/flask-bokeh-example/blob/master/tutorial.md
-
-Chromedriver on Heroku: https://stackoverflow.com/questions/41059144/running-chromedriver-with-python-selenium-on-heroku
