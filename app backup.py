@@ -10,8 +10,6 @@ import selenium
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
 import pandas as pd
 from bokeh.plotting import figure, show
@@ -21,16 +19,16 @@ from bokeh.palettes import Spectral11
 from bokeh.embed import file_html
 from bokeh.plotting import figure, output_file, save
 
-# chrome_options = webdriver.ChromeOptions()
-# chrome_options.binary_location = r"/app/.apt/usr/bin/google-chrome"
-# chrome_options.add_argument("--headless")
-# chrome_options.add_argument("--disable-dev-shm-usage")
-# chrome_options.add_argument("--no-sandbox")
-ChromePATH = r"C:\Users\timtr\Documents\Coding\Dev_Tools\chromedriver.exe"   #The random r before the path converts it to a raw string
-internetdriver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-# internetdriver = webdriver.Chrome(ChromePATH, chrome_options=chrome_options)
+chrome_options = webdriver.ChromeOptions()
+chrome_options.binary_location = r"/app/.apt/usr/bin/google-chrome"
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--no-sandbox")
+ChromePATH = r"/app/.chromedriver/bin/chromedriver"   #The random r before the path converts it to a raw string
+internetdriver = webdriver.Chrome(ChromePATH, chrome_options=chrome_options)
 
 app = Flask(__name__)
+
 
 @app.route('/')
 def test():
@@ -69,6 +67,7 @@ def test():
         pd.to_numeric, errors='coerce')
 
     # Line Chart
+    output_file(filename="spotwx.html", title="SpotWX data scrape")
 
     bokehdata = ColumnDataSource(df)
     p = figure(width=1000, height=400, x_axis_type='datetime')
