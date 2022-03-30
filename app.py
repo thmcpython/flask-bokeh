@@ -66,32 +66,34 @@ def test():
     df[converttonumeric] = df[converttonumeric].apply(
         pd.to_numeric, errors='coerce')
 
-    # Line Chart
-    output_file(filename="spotwx.html", title="SpotWX data scrape")
+    printeddf = print(df)
 
-    bokehdata = ColumnDataSource(df)
-    p = figure(width=1000, height=400, x_axis_type='datetime')
-    p.line(x='Datetime', y='RH', source=bokehdata,
-           line_color="#f46d43", line_width=3)
-    p.title.text = 'Temperature forecast'
-    p.xaxis.axis_label = 'Date'
-    p.yaxis.axis_label = 'Temp. Celcius'
+    # # Line Chart
+    # output_file(filename="spotwx.html", title="SpotWX data scrape")
 
-    hover = HoverTool()
-    hover.tooltips = [
-        ('Time', '@Datetime{%H:%M}'),
-        ('Wind Speed km/h', '@WS'),
-    ]
+    # bokehdata = ColumnDataSource(df)
+    # p = figure(width=1000, height=400, x_axis_type='datetime')
+    # p.line(x='Datetime', y='RH', source=bokehdata,
+    #        line_color="#f46d43", line_width=3)
+    # p.title.text = 'Temperature forecast'
+    # p.xaxis.axis_label = 'Date'
+    # p.yaxis.axis_label = 'Temp. Celcius'
 
-    hover.formatters = {
-        # Bokeh formatter docs here: https://docs.bokeh.org/en/2.4.0/docs/reference/models/formatters.html#datetimetickformatter
-        '@Datetime': 'datetime',
-    }
+    # hover = HoverTool()
+    # hover.tooltips = [
+    #     ('Time', '@Datetime{%H:%M}'),
+    #     ('Wind Speed km/h', '@WS'),
+    # ]
 
-    p.add_tools(hover)
+    # hover.formatters = {
+    #     # Bokeh formatter docs here: https://docs.bokeh.org/en/2.4.0/docs/reference/models/formatters.html#datetimetickformatter
+    #     '@Datetime': 'datetime',
+    # }
+
+    # p.add_tools(hover)
 
     #### get components to form HTML page ####
-    script, div = components(p)
+    script, div = components(printeddf)
 
     page = render_template('test.html', div=div, script=script)
     return page
