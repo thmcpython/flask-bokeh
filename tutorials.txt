@@ -1,0 +1,5 @@
+Bokeh scripts on Flask: https://github.com/realpython/flask-bokeh-example/blob/master/tutorial.md
+
+Chromedriver on Heroku: https://stackoverflow.com/questions/41059144/running-chromedriver-with-python-selenium-on-heroku
+
+Running Heroku apps locally on Windows: http://www.learningaboutelectronics.com/Articles/How-to-run-heroku-locally-on-a-windows-operating-system-Django.php
