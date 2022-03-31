@@ -27,65 +27,65 @@ from bokeh.plotting import figure, output_file, save
 
 app = Flask(__name__)
 
-GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
-CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
+# GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
+# CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
 
-chrome_options = webdriver.ChromeOptions()
-chrome_options.add_argument('--disable-gpu')
-chrome_options.add_argument('--no-sandbox')
-chrome_options.binary_location = GOOGLE_CHROME_PATH
-# chrome_options.binary_location = os.getenv('GOOGLE_CHROME_BIN')
-# chrome_options.add_argument("--headless") # These chrome options are included in the new buildpack by default
-# chrome_options.add_argument("--disable-dev-shm-usage")
-# chrome_options.add_argument("--no-sandbox")
-# CHROMEDRIVER_PATH = r"C:\Users\timtr\Documents\Coding\Dev_Tools\chromedriver.exe"   #The random r before the path converts it to a raw string
+# chrome_options = webdriver.ChromeOptions()
+# chrome_options.add_argument('--disable-gpu')
+# chrome_options.add_argument('--no-sandbox')
+# chrome_options.binary_location = GOOGLE_CHROME_PATH
+# # chrome_options.binary_location = os.getenv('GOOGLE_CHROME_BIN')
+# # chrome_options.add_argument("--headless") # These chrome options are included in the new buildpack by default
+# # chrome_options.add_argument("--disable-dev-shm-usage")
+# # chrome_options.add_argument("--no-sandbox")
+# # CHROMEDRIVER_PATH = r"C:\Users\timtr\Documents\Coding\Dev_Tools\chromedriver.exe"   #The random r before the path converts it to a raw string
 
-internetdriver = webdriver.Chrome(service=CHROMEDRIVER_PATH, options=chrome_options)
+# internetdriver = webdriver.Chrome(service=CHROMEDRIVER_PATH, options=chrome_options)
 
-# internetdriver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-# internetdriver = webdriver.Chrome(ChromePATH, chrome_options=chrome_options)
+# # internetdriver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+# # internetdriver = webdriver.Chrome(ChromePATH, chrome_options=chrome_options)
 
-def test():
-    URL = "https://spotwx.com/products/grib_index.php?model=nam_awphys&lat=49.81637&lon=-123.33601&tz=America/Vancouver&display=table"
-    list = []
+# def test():
+#     URL = "https://spotwx.com/products/grib_index.php?model=nam_awphys&lat=49.81637&lon=-123.33601&tz=America/Vancouver&display=table"
+#     list = []
 
-    with internetdriver as driver:
-        driver.get(URL)
+#     with internetdriver as driver:
+#         driver.get(URL)
 
-        # Click add columns button
-        driver.find_element(
-            By.XPATH, '//span[contains(text(), "Add/Remove Columns")]').click()
-        # click button to add freezing level to table
-        driver.find_element(
-            By.XPATH, '//span[contains(text(), "HGT_0C_DB")]').click()
-        # Send escape key to exit add columns dialog box
-        webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+#         # Click add columns button
+#         driver.find_element(
+#             By.XPATH, '//span[contains(text(), "Add/Remove Columns")]').click()
+#         # click button to add freezing level to table
+#         driver.find_element(
+#             By.XPATH, '//span[contains(text(), "HGT_0C_DB")]').click()
+#         # Send escape key to exit add columns dialog box
+#         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
-        soup = BeautifulSoup(driver.page_source, 'lxml')
-        # select all the table rows
-        for item in soup.select("table#example tbody tr"):
-            # grab the text for each td tag
-            data = [elem.text for elem in item.select('td')]
-            # append the list of td text to the broader list, creating a list of lists
-            list.append(data)
+#         soup = BeautifulSoup(driver.page_source, 'lxml')
+#         # select all the table rows
+#         for item in soup.select("table#example tbody tr"):
+#             # grab the text for each td tag
+#             data = [elem.text for elem in item.select('td')]
+#             # append the list of td text to the broader list, creating a list of lists
+#             list.append(data)
 
-    df = pd.DataFrame(list, columns=["Datetime", "TMP", "DPT", "RH", "WS", "WD", "WG",
-                      "APCP", "Cloud", "SLP", "HGT_0C_DB"])  # Create dataframe and name columns
+#     df = pd.DataFrame(list, columns=["Datetime", "TMP", "DPT", "RH", "WS", "WD", "WG",
+#                       "APCP", "Cloud", "SLP", "HGT_0C_DB"])  # Create dataframe and name columns
 
-    # Data cleanup and conversion
-    df["Datetime"] = pd.to_datetime(df.Datetime)
-    df.rename({"HGT_0C_DB": "Freezing Level"}, axis="columns",
-              inplace=True)  # Renames Freezing level column
-    converttonumeric = df.columns.drop('Datetime')
-    df[converttonumeric] = df[converttonumeric].apply(pd.to_numeric, errors='coerce')
-    outputtable = df.to_html()
-    # print(outputtable)
-    return outputtable
+#     # Data cleanup and conversion
+#     df["Datetime"] = pd.to_datetime(df.Datetime)
+#     df.rename({"HGT_0C_DB": "Freezing Level"}, axis="columns",
+#               inplace=True)  # Renames Freezing level column
+#     converttonumeric = df.columns.drop('Datetime')
+#     df[converttonumeric] = df[converttonumeric].apply(pd.to_numeric, errors='coerce')
+#     outputtable = df.to_html()
+#     # print(outputtable)
+#     return outputtable
 
 
 @app.route('/')
 def myapp():
-    result = test()
+    # result = test()
     
     # Line Chart
 
@@ -101,8 +101,8 @@ def myapp():
 
     #### get components to form HTML page ####
     script, div = components(p)
-
-    return render_template('test.html', test_result=result, div=div, script=script)
+    return render_template('test.html', div=div, script=script)
+    # return render_template('test.html', test_result=result, div=div, script=script)
 
 
 if __name__ == "__main__":
