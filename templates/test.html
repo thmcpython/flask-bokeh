@@ -4,13 +4,16 @@
     <meta charset="UTF-8">
     <link href="http://cdn.bokeh.org/bokeh/release/bokeh-2.4.2.min.css" rel="stylesheet" type="text/css">
     <script src="http://cdn.bokeh.org/bokeh/release/bokeh-2.4.2.min.js"></script>
+    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-gl-2.4.2.min.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
 <h1> Forecasts</h1>
+<center>
+{{ test_result | safe }}
 <br/>
 {{ div | safe }}
 {{ script | safe }}
-
+</center>
 </body>
 </html>

@@ -1,7 +1,4 @@
 import os
-from turtle import ht
-from unittest import result
-from markupsafe import Markup
 from cgitb import html
 from flask import Flask, render_template
 from bokeh.embed import components
@@ -22,29 +19,29 @@ from bokeh.models import ColumnDataSource
 from bokeh.models.tools import HoverTool
 from bokeh.palettes import Spectral11
 from bokeh.embed import file_html
-from bokeh.embed import components
 from bokeh.plotting import figure, output_file, save
 
-app = Flask(__name__)
-
-# GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
-# CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
+GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
+CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
 
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument('--disable-gpu')
 chrome_options.add_argument('--no-sandbox')
-# chrome_options.binary_location = GOOGLE_CHROME_PATH
+chrome_options.binary_location = GOOGLE_CHROME_PATH
 # chrome_options.binary_location = os.getenv('GOOGLE_CHROME_BIN')
 # chrome_options.add_argument("--headless") # These chrome options are included in the new buildpack by default
 # chrome_options.add_argument("--disable-dev-shm-usage")
 # chrome_options.add_argument("--no-sandbox")
-# CHROMEDRIVER_PATH = r"C:\Users\timtr\Documents\Coding\Dev_Tools\chromedriver.exe"   #The random r before the path converts it to a raw string
+# ChromePATH = r"C:\Users\timtr\Documents\Coding\Dev_Tools\chromedriver.exe"   #The random r before the path converts it to a raw string
 
-# internetdriver = webdriver.Chrome(service=CHROMEDRIVER_PATH, options=chrome_options)
+internetdriver = webdriver.Chrome(service=CHROMEDRIVER_PATH, options=chrome_options)
 
-internetdriver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+# internetdriver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 # internetdriver = webdriver.Chrome(ChromePATH, chrome_options=chrome_options)
 
+app = Flask(__name__)
+
+@app.route('/')
 def test():
     URL = "https://spotwx.com/products/grib_index.php?model=nam_awphys&lat=49.81637&lon=-123.33601&tz=America/Vancouver&display=table"
     list = []
@@ -77,32 +74,37 @@ def test():
     df.rename({"HGT_0C_DB": "Freezing Level"}, axis="columns",
               inplace=True)  # Renames Freezing level column
     converttonumeric = df.columns.drop('Datetime')
-    df[converttonumeric] = df[converttonumeric].apply(pd.to_numeric, errors='coerce')
-    outputtable = df.to_html()
-    # print(outputtable)
-    return outputtable
+    df[converttonumeric] = df[converttonumeric].apply(
+        pd.to_numeric, errors='coerce')
 
-
-@app.route('/')
-def myapp():
-    result = test()
-    
     # Line Chart
 
-    # prepare some data
-    x = [1, 2, 3, 4, 5]
-    y = [6, 7, 2, 4, 5]
+    bokehdata = ColumnDataSource(df)
+    p = figure(width=1000, height=400, x_axis_type='datetime')
+    p.line(x='Datetime', y='RH', source=bokehdata,
+           line_color="#f46d43", line_width=3)
+    p.title.text = 'Temperature forecast'
+    p.xaxis.axis_label = 'Date'
+    p.yaxis.axis_label = 'Temp. Celcius'
 
-    # create a new plot with a title and axis labels
-    p = figure(title="Simple line example", x_axis_label="x", y_axis_label="y")
+    hover = HoverTool()
+    hover.tooltips = [
+        ('Time', '@Datetime{%H:%M}'),
+        ('Wind Speed km/h', '@WS'),
+    ]
 
-    # add a line renderer with legend and line thickness
-    p.line(x, y, legend_label="Temp.", line_width=2)
+    hover.formatters = {
+        # Bokeh formatter docs here: https://docs.bokeh.org/en/2.4.0/docs/reference/models/formatters.html#datetimetickformatter
+        '@Datetime': 'datetime',
+    }
+
+    p.add_tools(hover)
 
     #### get components to form HTML page ####
     script, div = components(p)
 
-    return render_template('test.html', test_result=result, div=div, script=script)
+    page = render_template('test.html', div=div, script=script)
+    return page
 
 
 if __name__ == "__main__":
