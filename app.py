@@ -27,22 +27,22 @@ from bokeh.plotting import figure, output_file, save
 
 app = Flask(__name__)
 
-# GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
-# CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
+GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
+CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
 
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument('--disable-gpu')
 chrome_options.add_argument('--no-sandbox')
-# chrome_options.binary_location = GOOGLE_CHROME_PATH
+chrome_options.binary_location = GOOGLE_CHROME_PATH
 # chrome_options.binary_location = os.getenv('GOOGLE_CHROME_BIN')
 # chrome_options.add_argument("--headless") # These chrome options are included in the new buildpack by default
 # chrome_options.add_argument("--disable-dev-shm-usage")
 # chrome_options.add_argument("--no-sandbox")
 # CHROMEDRIVER_PATH = r"C:\Users\timtr\Documents\Coding\Dev_Tools\chromedriver.exe"   #The random r before the path converts it to a raw string
 
-# internetdriver = webdriver.Chrome(service=CHROMEDRIVER_PATH, options=chrome_options)
+internetdriver = webdriver.Chrome(service=CHROMEDRIVER_PATH, options=chrome_options)
 
-internetdriver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+# internetdriver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 # internetdriver = webdriver.Chrome(ChromePATH, chrome_options=chrome_options)
 
 def test():
