@@ -1,39 +1,45 @@
 import os
-from os.path import join, dirname
-from dotenv import load_dotenv
 from flask import Flask, render_template
+from bokeh.embed import components
+from bokeh.plotting import figure
+import pandas as pd
+from matplotlib.font_manager import list_fonts
 import time
 import selenium
-import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
+import pandas as pd
+from bokeh.plotting import figure, show
+from bokeh.models import ColumnDataSource
+from bokeh.models.tools import HoverTool
+from bokeh.palettes import Spectral11
+from bokeh.embed import file_html
+from bokeh.embed import components
+from bokeh.plotting import figure, output_file, save
 
 app = Flask(__name__)
 
-GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
-CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
+# GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
+# CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
 
-chrome_serv=Service(CHROMEDRIVER_PATH)
-chrome_options = Options()
+chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument('--disable-gpu')
 chrome_options.add_argument('--no-sandbox')
-chrome_options.binary_location = GOOGLE_CHROME_PATH
+# chrome_options.binary_location = GOOGLE_CHROME_PATH
 # chrome_options.binary_location = os.getenv('GOOGLE_CHROME_BIN')
-chrome_options.add_argument("--headless") # These chrome options are included in the new buildpack by default
+# chrome_options.add_argument("--headless") # These chrome options are included in the new buildpack by default
 # chrome_options.add_argument("--disable-dev-shm-usage")
 # chrome_options.add_argument("--no-sandbox")
 # CHROMEDRIVER_PATH = r"C:\Users\timtr\Documents\Coding\Dev_Tools\chromedriver.exe"   #The random r before the path converts it to a raw string
 
-# internetdriver = webdriver.Chrome(service=CHROMEDRIVER_PATH)
+# internetdriver = webdriver.Chrome(service=CHROMEDRIVER_PATH, options=chrome_options)
 
-internetdriver = webdriver.Chrome(service=chrome_serv, options=chrome_options)
-# internetdriver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options) # This might also work
-# internetdriver = webdriver.Chrome(CHROMEDRIVER_PATH, chrome_options=chrome_options)
+internetdriver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+# internetdriver = webdriver.Chrome(ChromePATH, chrome_options=chrome_options)
 
 @app.route('/')
 def test():
@@ -71,13 +77,33 @@ def test():
     df[converttonumeric] = df[converttonumeric].apply(
         pd.to_numeric, errors='coerce')
 
-    html = df.to_html()
-    # print(html)
+    # Line Chart
 
+    bokehdata = ColumnDataSource(df)
+    p = figure(width=1000, height=400, x_axis_type='datetime')
+    p.line(x='Datetime', y='RH', source=bokehdata,
+           line_color="#f46d43", line_width=3)
+    p.title.text = 'Temperature forecast'
+    p.xaxis.axis_label = 'Date'
+    p.yaxis.axis_label = 'Temp. Celcius'
+
+    hover = HoverTool()
+    hover.tooltips = [
+        ('Time', '@Datetime{%H:%M}'),
+        ('Wind Speed km/h', '@WS'),
+    ]
+
+    hover.formatters = {
+        # Bokeh formatter docs here: https://docs.bokeh.org/en/2.4.0/docs/reference/models/formatters.html#datetimetickformatter
+        '@Datetime': 'datetime',
+    }
+
+    p.add_tools(hover)
 
     #### get components to form HTML page ####
-   
-    page = render_template('test.html', forecast_table=html)
+    script, div = components(p)
+
+    page = render_template('test.html', div=div, script=script)
     return page
 
 
