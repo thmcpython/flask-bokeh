@@ -6,6 +6,7 @@ import time
 import selenium
 import pandas as pd
 from selenium import webdriver
+import chromedriver_binary # Importing this exports chrome path to $PATH, below code will fail without this import
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
@@ -15,15 +16,16 @@ from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
-GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
+GOOGLE_CHROME_PATH = os.getenv('GOOGLE_CHROME_BIN')
+chrome_bin = os.environ.get('GOOGLE_CHROME_SHIM', None)
 CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
 
 chrome_serv=Service(CHROMEDRIVER_PATH)
 chrome_options = Options()
+chrome_options.binary_location = chrome_bin
 chrome_options.add_argument('--disable-gpu')
 chrome_options.add_argument('--no-sandbox')
-chrome_options.binary_location = GOOGLE_CHROME_PATH
-# chrome_options.binary_location = os.getenv('GOOGLE_CHROME_BIN')
+# chrome_options.binary_location = GOOGLE_CHROME_PATH
 chrome_options.add_argument("--headless") # These chrome options are included in the new buildpack by default
 # chrome_options.add_argument("--disable-dev-shm-usage")
 # chrome_options.add_argument("--no-sandbox")

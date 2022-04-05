@@ -5,3 +5,5 @@ Chromedriver on Heroku: https://stackoverflow.com/questions/41059144/running-chr
 Running Heroku apps locally on Windows: http://www.learningaboutelectronics.com/Articles/How-to-run-heroku-locally-on-a-windows-operating-system-Django.php
 
 Chrome buildpacks documentation: https://github.com/heroku/heroku-buildpack-google-chrome#channels
+
+Forum thread about Chromedriver on Heroku: https://github.com/heroku/heroku-buildpack-google-chrome/issues/26
