@@ -25,12 +25,12 @@ def load_driver():
 	# enable trace level for debugging 
 	option.log.level = "trace"
 	# options.add_argument("-remote-debugging-port=9224")
-	# options.add_argument("-headless")
+	options.add_argument("-headless")
 	option.add_argument("-disable-gpu")
 	option.add_argument("-no-sandbox") 
 	option.binary_location=FIREFOX_BIN
 	driverService = Service(GECKODRIVER_PATH)
-	firefox_driver = webdriver.Chrome(service=driverService, options=option)
+	firefox_driver = webdriver.Firefox(service=driverService, options=option)
 
 	return firefox_driver
 
