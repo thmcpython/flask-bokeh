@@ -16,8 +16,8 @@ from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
-GECKODRIVER_PATH = r"C:\Users\timtr\Documents\Coding\Dev_Tools\geckodriver.exe"
-FIREFOX_BIN = r"C:\Program Files\Mozilla Firefox\firefox.exe"
+GECKODRIVER_PATH = os.environ.get('GECKODRIVER_PATH')
+FIREFOX_BIN = os.environ.get('FIREFOX_BIN')
 
 def load_driver():
 	
