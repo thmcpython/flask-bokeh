@@ -7,3 +7,7 @@ Running Heroku apps locally on Windows: http://www.learningaboutelectronics.com/
 Chrome buildpacks documentation: https://github.com/heroku/heroku-buildpack-google-chrome#channels
 
 Forum thread about Chromedriver on Heroku: https://github.com/heroku/heroku-buildpack-google-chrome/issues/26
+
+PhantomJS tutorial: https://isaacjohnwesley.tumblr.com/post/57439869677/setting-up-phantomjs-in-heroku-for-your-python-app
+
+Heroku Firefox buildpack: https://github.com/evosystem-jp/heroku-buildpack-firefox

@@ -1,20 +1,12 @@
-from cgitb import html
 import os
-from os.path import join, dirname
-from dotenv import load_dotenv
-from flask import Flask, render_template
-import time
-import selenium
-import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service
-from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
-
-app = Flask(__name__)
+import pandas as pd
 
 GECKODRIVER_PATH = r"C:\Users\timtr\Documents\Coding\Dev_Tools\geckodriver.exe"
 FIREFOX_BIN = r"C:\Program Files\Mozilla Firefox\firefox.exe"
@@ -34,8 +26,7 @@ def load_driver():
 
 	return firefox_driver
 
-@app.route('/')
-def start():
+def  start():
 	driver = load_driver()
 	URL = "https://spotwx.com/products/grib_index.php?model=nam_awphys&lat=49.81637&lon=-123.33601&tz=America/Vancouver&display=table"
 	list = []
@@ -46,7 +37,8 @@ def start():
 		driver.find_element(
 		By.XPATH, '//span[contains(text(), "Add/Remove Columns")]').click()
 		# click button to add freezing level to table
-		driver.find_element(By.XPATH, '//span[contains(text(), "HGT_0C_DB")]').click()
+		driver.find_element(
+		By.XPATH, '//span[contains(text(), "HGT_0C_DB")]').click()
 		# Send escape key to exit add columns dialog box
 		webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
@@ -58,29 +50,18 @@ def start():
 			# append the list of td text to the broader list, creating a list of lists
 			list.append(data)
 
-		df = pd.DataFrame(list, columns=["Datetime", "TMP", "DPT", "RH", "WS", "WD", "WG", "APCP", "Cloud", "SLP", "HGT_0C_DB"])  # Create dataframe and name columns
+	df = pd.DataFrame(list, columns=["Datetime", "TMP", "DPT", "RH", "WS", "WD", "WG", "APCP", "Cloud", "SLP", "HGT_0C_DB"])  # Create dataframe and name columns
 
-		# Data cleanup and conversion
-		df["Datetime"] = pd.to_datetime(df.Datetime)
-		df.rename({"HGT_0C_DB": "Freezing Level"}, axis="columns",
-		inplace=True)  # Renames Freezing level column
-		converttonumeric = df.columns.drop('Datetime')
-		df[converttonumeric] = df[converttonumeric].apply(
-		pd.to_numeric, errors='coerce')
+	# Data cleanup and conversion
+	df["Datetime"] = pd.to_datetime(df.Datetime)
+	df.rename({"HGT_0C_DB": "Freezing Level"}, axis="columns",
+	inplace=True)  # Renames Freezing level column
+	converttonumeric = df.columns.drop('Datetime')
+	df[converttonumeric] = df[converttonumeric].apply(
+	pd.to_numeric, errors='coerce')
 
-		html = df.to_html()
-		print(html)
+	html = df.to_html()
+	print(html)
 
-
-	#### get components to form HTML page ####
-
-	page = render_template('test.html', forecast_table=html)
-	return page
-
-if __name__ == "__main__":
-		# start()
-		app.run(debug=True,
-		threaded=False
-		)
-		
-
+if  __name__ == "__main__":
+	start()
