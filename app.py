@@ -25,7 +25,7 @@ def load_driver():
 	# enable trace level for debugging 
 	option.log.level = "trace"
 	# options.add_argument("-remote-debugging-port=9224")
-	options.add_argument("-headless")
+	option.add_argument("-headless")
 	option.add_argument("-disable-gpu")
 	option.add_argument("-no-sandbox") 
 	option.binary_location=FIREFOX_BIN
