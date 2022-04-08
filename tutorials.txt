@@ -10,4 +10,8 @@ Forum thread about Chromedriver on Heroku: https://github.com/heroku/heroku-buil
 
 PhantomJS tutorial: https://isaacjohnwesley.tumblr.com/post/57439869677/setting-up-phantomjs-in-heroku-for-your-python-app
 
-Heroku Firefox buildpack: https://github.com/evosystem-jp/heroku-buildpack-firefox
+Heroku Firefox/Gecko buildpack: https://elements.heroku.com/buildpacks/pyronlaboratory/heroku-integrated-firefox-geckodriver
+
+
+stackoverflow for latest problem: https://stackoverflow.com/questions/70821737/webdriverexception-message-service-geckodriver-unexpectedly-exited-status-cod
+(geckodriver is too old, need to use a different buildpack)
