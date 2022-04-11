@@ -13,7 +13,7 @@ FIREFOX_BIN = r"C:\Program Files\Mozilla Firefox\firefox.exe"
 
 def load_driver():
 	
-	option = webdriver.FirefoxOptions()
+	option = Options()
 	# enable trace level for debugging 
 	option.log.level = "trace"
 	# options.add_argument("-remote-debugging-port=9224")
@@ -22,7 +22,7 @@ def load_driver():
 	option.add_argument("-no-sandbox") 
 	option.binary_location=FIREFOX_BIN
 	driverService = Service(GECKODRIVER_PATH)
-	firefox_driver = webdriver.Chrome(service=driverService, options=option)
+	firefox_driver = webdriver.Firefox(service=driverService, options=option)
 
 	return firefox_driver
 
