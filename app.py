@@ -19,9 +19,6 @@ import os
 
 app = Flask(__name__)
 
-# GECKODRIVER_PATH = os.environ.get('GECKODRIVER_PATH')
-# FIREFOX_BIN = os.environ.get('FIREFOX_BIN')
-
 @app.route('/')
 def load_driver():
 	heroku=True
