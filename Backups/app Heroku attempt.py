@@ -61,12 +61,14 @@ def start():
 		df = pd.DataFrame(list, columns=["Datetime", "TMP", "DPT", "RH", "WS", "WD", "WG", "APCP", "Cloud", "SLP", "HGT_0C_DB"])  # Create dataframe and name columns
 
 		# Data cleanup and conversion
+		df.set_index("Datetime", inplace="True")
 		df["Datetime"] = pd.to_datetime(df.Datetime)
 		df.rename({"HGT_0C_DB": "Freezing Level"}, axis="columns",
 		inplace=True)  # Renames Freezing level column
 		converttonumeric = df.columns.drop('Datetime')
 		df[converttonumeric] = df[converttonumeric].apply(
 		pd.to_numeric, errors='coerce')
+		df.columns
 
 		html = df.to_html()
 		print(html)

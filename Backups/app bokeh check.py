@@ -3,8 +3,6 @@ from unittest import result
 from markupsafe import Markup
 from cgitb import html
 from flask import Flask, render_template
-from bokeh.embed import components
-from bokeh.plotting import figure
 import pandas as pd
 from matplotlib.font_manager import list_fonts
 import time
@@ -23,6 +21,8 @@ from bokeh.palettes import Spectral11
 from bokeh.embed import file_html
 from bokeh.embed import components
 from bokeh.plotting import figure, output_file, save
+from bokeh.embed import components
+from bokeh.plotting import figure
 
 app = Flask(__name__)
 
