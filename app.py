@@ -24,7 +24,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def load_driver():
-	heroku=False
+	heroku=True
 	# driver profile
 	options = webdriver.chrome.options.Options()
 	# options so that it runs on Heroku
